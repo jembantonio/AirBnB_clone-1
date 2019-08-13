@@ -42,9 +42,25 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
+
             obj = eval("{}()".format(my_list[0]))
+
+            kvdict = dict(key_val.split("=")
+
+            for key_val in my_list[1:])
+            for key, val in kvdict.items():
+                if hasattr(obj, key):
+                    if type(val) is str:
+                        new = val.strip("\"")
+                        new = new.replace("_", " ")
+                    try:
+                        val = eval(val)
+                    except Exception:
+                        pass
+                    setattr(obj, key, val)
             obj.save()
             print("{}".format(obj.id))
+
         except SyntaxError:
             print("** class name missing **")
         except NameError:
