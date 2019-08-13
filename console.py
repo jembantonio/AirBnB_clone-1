@@ -53,6 +53,10 @@ class HBNBCommand(cmd.Cmd):
                     if type(val) is str:
                         new = val.strip("\"")
                         new = new.replace("_", " ")
+                    elif type(val) is int:
+                        val = int(val)
+                    elif type(val) is float:
+                        val = float(val)
                     try:
                         val = eval(val)
                     except Exception:
