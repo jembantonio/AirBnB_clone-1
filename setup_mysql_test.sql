@@ -1,8 +1,9 @@
---prepares mysql server for test db
+-- prepares mysql server for test db
 CREATE DATABASE IF NOT EXISTS hbnb_test_db;
 -- add new user hbnb_test
-CREATE USER IF NOT EXISTS 'hbnb_test'@'localhost'
-IDENTIFIED BY 'hbnb_test_pwd';
+CREATE USER IF NOT EXISTS 'hbnb_test'@'localhost' IDENTIFIED BY 'hbnb_test_pwd';
+-- grant blanket usage
+GRANT USAGE ON *.* TO 'hbnb_test'@'localhost';
 -- grant all privileges on database hbnb_test_db and
 GRANT ALL ON hbnb_test_db. * TO 'hbnb_test'@'localhost';
 -- SELECT privilege on performance_schema db
