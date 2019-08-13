@@ -4,7 +4,7 @@
 
 from os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 class DBStorage:
     '''Database Storage class
@@ -20,6 +20,8 @@ class DBStorage:
     host = os.getenv("HBNB_MYSQL_HOST")
     dbse = os.getenv("HBNB_MYSQL_DB")
 
+    Base.metadata.create_all(engine)
+
     self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
         user, pswd, host, dbse), pool_pre_ping=True)
 
@@ -31,17 +33,32 @@ class DBStorage:
     '''
         cls_dict = {}
         if cls is not None:
-            for cls_inst in self.__session.query(cls).all():
-                cls_dict.append(cls_inst)
-
-        if cls is None:
-            for cls_inst in self.__session.query(
-                User, State, City, Amenity, Place, Review).all():
-                cls_dict.append(cls_inst)
+            for cls_inst in self.__session.query(models.classes[cls]).all():
+                    for objects in cls_inst:
+                        cls_dict.append(cls_inst)   
+        
+        cls_list =['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+        else:
+            for all_class in cls_list:
+                for cls_inst in self.__sesion.query(models.classes[all_class]).all():
+                    cls_dict.append(cls_inst)
+       # if cls is None:
+        #    for cls_inst in self.__session.query(
+         #       User, State, City, Amenity, Place, Review).all():
+          #      cls_dict.append(cls_inst)
 
         return(cls_dict)
 
     def new(self, obj):
+        self.__session.add(obj)
 
     def save(self):
-        self.__session
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        for items_to_delete in obj:
+            self.__session.delete(items_to_delete)
+
+    def reload(self):
+        Session = sessionmaker(bind=engine, expire_on_commit=False)
+        session = scoped_session(Session)
