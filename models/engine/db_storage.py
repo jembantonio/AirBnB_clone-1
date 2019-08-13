@@ -4,7 +4,7 @@
 
 from os
 from sqlalchemy import create_engine
-from sqlalchemy.orm
+from sqlalchemy.orm import sessionmaker
 
 class DBStorage:
     '''Database Storage class
@@ -26,3 +26,22 @@ class DBStorage:
     if os.getenv("HBNB_ENV") == "test":
         Base.metadata.drop_all(bind=self.__engine)
 
+    def all(self, cls=None)
+    '''queries on the current database session (self.__session)
+    '''
+        cls_dict = {}
+        if cls is not None:
+            for cls_inst in self.__session.query(cls).all():
+                cls_dict.append(cls_inst)
+
+        if cls is None:
+            for cls_inst in self.__session.query(
+                User, State, City, Amenity, Place, Review).all():
+                cls_dict.append(cls_inst)
+
+        return(cls_dict)
+
+    def new(self, obj):
+
+    def save(self):
+        self.__session
