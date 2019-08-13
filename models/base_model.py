@@ -4,15 +4,17 @@ import uuid
 import models
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Datetime
+from sqlalchemy import Column, Integer, String, DateTime
+
+Base = declarative_base()
 
 class BaseModel:
     """This class will defines all common attributes/methods
     for other classes
     """
     id = Column(String(60), unique=True, nullable=False, primary_key=True)
-    created_at = Column(Datetime, default=datetime.utcnow(), nullable=False)
-    updated_at = Column(Datetime, default=datetime.utcnow()), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
 
     def __init__(self, *args, **kwargs):
         """Instantiation of base model class
@@ -72,4 +74,4 @@ class BaseModel:
 
     def delete(self):
         models.storage.delete(self)
-        
+

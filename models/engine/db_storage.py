@@ -2,10 +2,10 @@
 ''' database storage class for AirBnB
 '''
 
-from os
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-
+from models.base_model import BaseModel, Base
 class DBStorage:
     '''Database Storage class
     '''
@@ -13,31 +13,34 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-    ''' initializes the Database Storage instance
-    '''
-    user = os.getenv("HBNB_MYSQL_USER")
-    pswd = os.getenv("HBNB_MYSQL_PWD")
-    host = os.getenv("HBNB_MYSQL_HOST")
-    dbse = os.getenv("HBNB_MYSQL_DB")
+        ''' initializes the Database Storage instance
+        '''
+        user = os.getenv("HBNB_MYSQL_USER")
+        pswd = os.getenv("HBNB_MYSQL_PWD")
+        host = os.getenv("HBNB_MYSQL_HOST")
+        dbse = os.getenv("HBNB_MYSQL_DB")
 
-    Base.metadata.create_all(engine)
 
-    self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
-        user, pswd, host, dbse), pool_pre_ping=True)
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            user, pswd, host, dbse), pool_pre_ping=True)
 
-    if os.getenv("HBNB_ENV") == "test":
-        Base.metadata.drop_all(bind=self.__engine)
+        Base.metadata.create_all(self.__engine)
 
-    def all(self, cls=None)
-    '''queries on the current database session (self.__session)
-    '''
+        if os.getenv("HBNB_ENV") == "test":
+            Base.metadata.drop_all(bind=self.__engine)
+
+    def all(self, cls=None):
+        '''queries on the current database session (self.__session)
+        '''
         cls_dict = {}
+        cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+
         if cls is not None:
             for cls_inst in self.__session.query(models.classes[cls]).all():
                     for objects in cls_inst:
-                        cls_dict.append(cls_inst)   
-        
-        cls_list =['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+                        cls_dict.append(cls_inst)
+
+
         else:
             for all_class in cls_list:
                 for cls_inst in self.__sesion.query(models.classes[all_class]).all():
