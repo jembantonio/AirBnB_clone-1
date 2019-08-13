@@ -52,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
                 if hasattr(obj, key):
                     if type(val) is str:
                         new = val.strip("\"")
-                        new = new.replace("_", " ")
+                        val = new.replace("_", " ")
                     elif type(val) is int:
                         val = int(val)
                     elif type(val) is float:
