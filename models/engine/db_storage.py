@@ -30,15 +30,16 @@ class DBStorage:
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
             user, pswd, host, dbse), pool_pre_ping=True)
 
+        Base.metadata.bind = self.__engine
 
         if os.getenv("HBNB_ENV") == "test":
-            Base.metadata.drop_all(bind=self.__engine)
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         '''queries on the current database session (self.__session)
         '''
         cls_dict = {}
-        cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+        cls_list = ['State', 'City']
 
         if cls is not None:
             for cls_inst in self.__session.query(eval(cls).all()):
@@ -47,7 +48,7 @@ class DBStorage:
 
         else:
             for all_class in cls_list:
-                for cls_inst in self.__sesion.query(all_class).all():
+                for cls_inst in self.__session.query(all_class).all():
                     key = "{}.{}".format(type(obj).__name__, obj.id)
                     cls_dict[key] = obj
 
@@ -70,6 +71,7 @@ class DBStorage:
             self.__session.delete(obj)
 
     def reload(self):
-        session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(session)
+        Base.metadata.create_all(self.__engine)
+        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(session_factory)
         self.__session = Session()
