@@ -41,7 +41,7 @@ class DBStorage:
         cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
 
         if cls is not None:
-            for cls_inst in self.__session.query(eval(cls)).all():
+            for cls_inst in self.__session.query(eval(cls)):
                 for search in cls_inst:
                     cls_dict.append(search)
 
