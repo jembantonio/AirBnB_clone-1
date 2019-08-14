@@ -39,18 +39,16 @@ class DBStorage:
         '''queries on the current database session (self.__session)
         '''
         cls_dict = {}
-        cls_list = ['State', 'City']
-
-        if cls is not None:
+        if cls:
             for cls_inst in self.__session.query(eval(cls).all()):
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                cls_dict[key] = obj
+                key = "{}.{}".format(type(cls_inst).__name__, cls_inst.id)
+                cls_dict[key] = cls_inst
 
         else:
-            for all_class in cls_list:
-                for cls_inst in self.__session.query(all_class).all():
-                    key = "{}.{}".format(type(obj).__name__, obj.id)
-                    cls_dict[key] = obj
+
+            for cls_inst in self.__session.query(State).all():
+                key = "{}.{}".format(type(cls_inst).__name__, cls_inst.id)
+                cls_dict[key] = cls_inst
 
        # if cls is None:
         #    for cls_inst in self.__session.query(
