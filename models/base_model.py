@@ -6,7 +6,9 @@ from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
 
+
 Base = declarative_base()
+
 
 class BaseModel:
     """This class will defines all common attributes/methods
@@ -74,4 +76,3 @@ class BaseModel:
 
     def delete(self):
         models.storage.delete(self)
-

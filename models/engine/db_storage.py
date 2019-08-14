@@ -13,6 +13,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+
 class DBStorage:
     '''Database Storage class
     '''
@@ -29,7 +30,6 @@ class DBStorage:
 
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
             user, pswd, host, dbse, pool_pre_ping=True))
-
 
         if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(bind=self.__engine)
