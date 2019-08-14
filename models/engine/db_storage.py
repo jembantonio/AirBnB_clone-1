@@ -3,7 +3,7 @@
 '''
 
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import BaseModel, Base
 from models.user import User
@@ -28,7 +28,7 @@ class DBStorage:
         dbse = os.getenv("HBNB_MYSQL_DB")
 
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
-            user, pswd, host, dbse), pool_pre_ping=True)
+            user, pswd, host, dbse, pool_pre_ping=True))
 
 
         if os.getenv("HBNB_ENV") == "test":
@@ -41,22 +41,16 @@ class DBStorage:
         cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
 
         if cls is not None:
-            for cls_inst in self.__session.query(eval(cls).all()):
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                cls_dict[key] = obj
+            for cls_inst in self.__session.query(eval(cls)).all():
+                for search in cls_inst:
+                    cls_dict.append(search)
 
         else:
-            for all_class in cls_list:
-                for cls_inst in self.__sesion.query(all_class).all():
-                    key = "{}.{}".format(type(obj).__name__, obj.id)
+            class_objects = self.__session.query(cls).all()
+            for object in class_objects:
+                    key = type(object).__name__ + "." + str(object.id)
                     cls_dict[key] = obj
-
-       # if cls is None:
-        #    for cls_inst in self.__session.query(
-         #       User, State, City, Amenity, Place, Review).all():
-          #      cls_dict.append(cls_inst)
-
-        return(cls_dict)
+            return cls_dict
 
     def new(self, obj):
         if obj:
@@ -71,5 +65,6 @@ class DBStorage:
 
     def reload(self):
         session = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Base.metadata.create_all(self.__engine)
         Session = scoped_session(session)
         self.__session = Session()
