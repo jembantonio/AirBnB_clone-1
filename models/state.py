@@ -2,8 +2,10 @@
 """This is the state class"""
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 import os
+import models
+
 
 class State(BaseModel, Base):
     """This is the class for State
@@ -13,20 +15,18 @@ class State(BaseModel, Base):
     """
     __tablename__ = 'states'
 
-    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-        name = Column(String(128), nullable=False)
-        cities = relationship('City',
-                              cascade='all, delete-orphan', backref='State')
-    else:
-        name = ""
+    name = Column(String(128), nullable=False)
+    cities = relationship('City', backref='state', cascade='all, delete-orphan')
 
-    @property
-    def cities(self):
-        """ getter for cities that returns list of
-            city instances with state_id equal to current State.id
-        """
-        city_list = []
-        for city_search in models.storage.all('City').value():
-            if city_search.state_id == self.id:
-                city_list.append(city_search)
-        return city_list
+    if os.getenv("HBNB_TYPE_STORAGE") != 'db':
+        name = ''
+        @property
+        def cities(self):
+            """ getter for cities that returns list of
+                city instances with state_id equal to current State.id
+            """
+            city_list = []
+            for city_search in models.storage.all('City').values():
+                if city_search.state_id == self.id:
+                    city_list.append(city_search)
+            return city_list
