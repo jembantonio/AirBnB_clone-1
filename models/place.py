@@ -5,6 +5,8 @@ from sqlalchemy import Column, String, ForeignKey, Integer, Float
 from sqlalchemy.orm import relationship
 from models.city import City
 from models.user import User
+import os
+
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -33,3 +35,16 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     amenity_ids = []
+    reviews = relationship(
+        "Review", backref="place", cascade="all, delete-orphan")
+
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        @property
+        def reviews():
+            """ getter for reviews that returns list of
+                review instances with place_id equal to current Place.id
+            """
+            review_list = []
+            for review_search in self.reviews:
+                if review_search.place_id == self.id:
+                    review_list.append(review_search)

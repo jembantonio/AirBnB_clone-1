@@ -6,6 +6,7 @@ CREATE DATABASE IF NOT EXISTS hbnb_test_db;
 CREATE USER IF NOT EXISTS 'hbnb_test'@'localhost' IDENTIFIED BY 'hbnb_test_pwd';
 -- code/comment below is for 5.5
 -- GRANT ALL ON hbnb_dev_db.* TO 'hbnb_dev'@'localhost' IDENTIFIED BY 'hbnb_dev_pwd';
+
 -- grant blanket usage
 GRANT USAGE ON *.* TO 'hbnb_test'@'localhost';
 -- grant all privileges on database hbnb_test_db and
