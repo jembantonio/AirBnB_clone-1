@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """This is the state class"""
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship, backref
 import os
+import models
 
 
 class State(BaseModel, Base):
@@ -17,12 +18,10 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
     cities = relationship('City',
                           cascade='all, delete-orphan', backref='State')
-    else:
-        name = ""
 
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         @property
-        def cities(self):
+        def cities():
             """ getter for cities that returns list of
                 city instances with state_id equal to current State.id
             """

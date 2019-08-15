@@ -40,19 +40,16 @@ class DBStorage:
         '''
         cls_dict = {}
 
-        if cls is None:
-            cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
-            class_objects = []
-            for c_obj in cls_list:
-                query_result = self.__session.query(eval(c_obj))
-                for r_query in query_result:
-                    class_objects.append(query_result)
+        if cls is not None:
+            for c_object in self.__session.query(eval(cls)).all():
+                key = "{}.{}".format(type(c_object).__name__, c_object.id)
+                cls_dict[key] = c_object
 
         else:
-            class_objects = self.__session.query(cls).all()
-            for c_object in class_objects:
-                key = type(c_object).__name__ + "." + str(c_object.id)
+            for c_object in self.__session.query(City, State, User).all():
+                key = "{}.{}".format(type(c_object).__name__, c_object.id)
                 cls_dict[key] = c_object
+
         return cls_dict
 
     def new(self, obj):
