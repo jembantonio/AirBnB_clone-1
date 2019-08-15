@@ -2,7 +2,9 @@
 """This is the place class"""
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey, Integer, Float
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
+from models.city import City
+from models.user import User
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -19,7 +21,7 @@ class Place(BaseModel, Base):
         longitude: longitude in float
         amenity_ids: list of Amenity ids
     """
-    __table__name = 'places'
+    __tablename__ = 'places'
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
     user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
     name = Column(String(128), nullable=False)
