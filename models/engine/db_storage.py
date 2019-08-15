@@ -39,6 +39,7 @@ class DBStorage:
         '''queries on the current database session (self.__session)
         '''
         cls_dict = {}
+        class_list = [State, City, User, Place]
 
         if cls is not None:
             for c_object in self.__session.query(eval(cls)).all():
@@ -46,10 +47,10 @@ class DBStorage:
                 cls_dict[key] = c_object
 
         else:
-            for c_object in self.__session.query(City, State, User,
-                                                 Amenity, Place, Review).all():
-                key = "{}.{}".format(type(c_object).__name__, c_object.id)
-                cls_dict[key] = c_object
+            for classes in class_list:
+                for c_object in self.__session.query(classes).all():
+                    key = "{}.{}".format(type(c_object).__name__, c_object.id)
+                    cls_dict[key] = c_object
 
         return cls_dict
 
