@@ -52,8 +52,8 @@ class HBNBCommand(cmd.Cmd):
                     my_dict = dict(values.split('='))
                     for key, val in my_dict.items():
                         if hasattr(obj, key):
-                            if val[0] and val [-1] == "\"":
-                                val = val.strip("\"")
+                            if val.startswith('"') and val.endswith('"'):
+                                val = val[1:-1]
                             if "_" in val:
                                 val = val.replace("_", " ")
                             try:
