@@ -50,8 +50,8 @@ class HBNBCommand(cmd.Cmd):
                 key, val = key_val.split('=')
                 val = val.replace('_', ' ')
                 if hasattr(obj, key):
-                    elif type(val) is float:
-                        val = float(val)
+#                    elif type(val) is float:
+#                        val = float(val)
 #                    try:
 #                        val = eval(val)
 #                    except Exception:
