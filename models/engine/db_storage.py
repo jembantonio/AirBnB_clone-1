@@ -28,29 +28,28 @@ class DBStorage:
         host = os.getenv("HBNB_MYSQL_HOST")
         dbse = os.getenv("HBNB_MYSQL_DB")
 
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
-            user, pswd, host, dbse, pool_pre_ping=True))
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}:3306/{}'
+                                      .format(user, pswd, host, dbse,
+                                              pool_pre_ping=True))
 
         if os.getenv("HBNB_ENV") == "test":
-            Base.metadata.drop_all(bind=self.__engine)
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         '''queries on the current database session (self.__session)
         '''
         cls_dict = {}
-#        cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
 
-        if cls is not None:
-            #for cls_inst in self.__session.query(eval(cls)).all():
-                #for search in cls_inst:
-                    #cls_dict.append(search)
-            class_objects = self.__session.query(eval(cls)).all()
-            for c_object in class_objects:
-                key = type(c_object).__name__ + "." + str(c_object.id)
-                cls_dict[key] = c_object
+        if cls is None:
+            cls_list = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+            class_objects = []
+            for c_obj in cls_list:
+                query_result = self.__session.query(eval(c_obj))
+                for r_query in query_result:
+                    class_objects.append(query_result)
 
         else:
-            class_objects = self.__session.query(State, City).all()
+            class_objects = self.__session.query(cls).all()
             for c_object in class_objects:
                 key = type(c_object).__name__ + "." + str(c_object.id)
                 cls_dict[key] = c_object
@@ -64,11 +63,11 @@ class DBStorage:
         self.__session.commit()
 
     def delete(self, obj=None):
-        if obj is not None:
+        if obj:
             self.__session.delete(obj)
 
     def reload(self):
-        session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Base.metadata.create_all(self.__engine)
+        session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session)
         self.__session = Session()
