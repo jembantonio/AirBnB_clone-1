@@ -45,27 +45,19 @@ class HBNBCommand(cmd.Cmd):
 
             obj = eval("{}()".format(my_list[0]))
 
-#            kvdict = dict(key_val.split("="))
-
-            for key_val in my_list[1:]:
-#                for key, val in kvdict.items():
-                if '=' not in key_val:
-                    continue
-                key, val = key_val.split('=')
-                val = val.replace('_', ' ')
-                if hasattr(obj, key):
-#                   if type(val) is str:
-#                        new = val.strip("\"")
-#                        val = new.replace("_", " ")
-#                    elif type(val) is int:
-#                        val = int(val)
-#                    elif type(val) is float:
-#                        val = float(val)
-#                    try:
-#                        val = eval(val)
-#                    except Exception:
-#                        pass
-                    setattr(obj, key, eval(val))
+            if len(line) > 1:
+                my_dict = dict(attr.split("=") for attr in my_list[1:])
+                for key, val in my_dict.items():
+                    if hasattr(obj, key):
+                        if val[0] == "\"" and val[-1] == "\"":
+                            val = val.strip('\"')
+                        if "_" in val:
+                            val = val.replace("_", " ")
+                        try:
+                            val = eval(val)
+                        except Exception:
+                            pass
+                        setattr(obj, key, val)
             obj.save()
             print("{}".format(obj.id))
 
