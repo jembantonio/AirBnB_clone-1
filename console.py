@@ -45,23 +45,19 @@ class HBNBCommand(cmd.Cmd):
 
             obj = eval("{}()".format(my_list[0]))
 
-            for arg in my_list[1:]:
-                if "=" not in arg:
-                    continue
-                for values in my_list[1:]:
-                    my_dict = dict(values.split('='))
-                    for key, val in my_dict.items():
-                        if hasattr(obj, key):
-                            if val.startswith('"') and val.endswith('"'):
-                                val = val[1:-1]
-                            if "_" in val:
-                                val = val.replace("_", " ")
-                            try:
-                                val = eval(val)
-                            except Exception:
-                                pass
-                            setattr(obj, key, val)
-
+            if line[2]:
+                my_dict = dict(attr.split("=") for attr in my_list[1:])
+                for key, val in my_dict.items():
+                    if hasattr(obj, key):
+                        if val[0] == "\"" and val[-1] == "\"":
+                            val = val.strip('\"')
+                        if "_" in val:
+                            val = val.replace("_", " ")
+                        try:
+                            val = eval(val)
+                        except Exception:
+                            pass
+                        setattr(obj, key, val)
             obj.save()
             print("{}".format(obj.id))
 
