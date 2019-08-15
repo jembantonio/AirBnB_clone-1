@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This is the place class"""
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey, Integer, Float
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
 from models.city import City
 from models.user import User
@@ -37,8 +37,20 @@ class Place(BaseModel, Base):
     amenity_ids = []
     reviews = relationship(
         "Review", backref="place", cascade="all, delete-orphan")
+    place_amenity = Table(
+            'place_amenity', Base.metadata, Column(
+                'place_id', String(60), ForeignKey('places.id'),
+                primary_key=True, nullable=False),
+            Column(
+                'amenity_id', String(60), ForeignKey('amenities.id'),
+                primary_key=True, nullable=False))
+    amenities = relationship(
+                'Amenity', secondary='place_amenity', viewonly=False)
+
+
 
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+
         @property
         def reviews():
             """ getter for reviews that returns list of
@@ -48,3 +60,22 @@ class Place(BaseModel, Base):
             for review_search in self.reviews:
                 if review_search.place_id == self.id:
                     review_list.append(review_search)
+            return review_list
+
+    if os.getenv('HBNB_TYPE_STORAGE') == 'file':
+        @property
+        def amenities(self):
+            '''Returns value of amenity instances
+            '''
+            amenities_list = []
+            for amenit_search in self.amenities:
+                if amenit_search.place_id == self.id:
+                    amenities_list.append(amenit_search)
+            return amenities_list
+
+        @amenities.setter
+        def amenities(self, obj):
+            '''setter for amenities
+            '''
+            if type(obj).__name__ == Amenity:
+                self.amenity_ids.append(obj.id)
