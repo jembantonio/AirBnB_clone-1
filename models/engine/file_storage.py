@@ -20,12 +20,20 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """returns a dictionary
         Return:
             returns a dictionary of __object
         """
-        return self.__objects
+        object_list = {}
+        if cls is not None:
+            if not isinstance(cls, str):
+                cls = cls.__name__
+            for key, val in self.__objects.items():
+                if cls == key.split('.')[0]:
+                    object_list[key] = val
+
+        return object_list
 
     def new(self, obj):
         """sets __object to given obj
