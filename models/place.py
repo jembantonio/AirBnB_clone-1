@@ -7,6 +7,13 @@ from models.city import City
 from models.user import User
 import os
 
+place_amenity = Table('place_amenity', Base.metadata,
+                      Column('place_id', String(60), ForeignKey('places.id'),
+                             primary_key=True, nullable=False),
+                      Column('amenity_id', String(60),
+                             ForeignKey('amenities.id'),
+                             primary_key=True, nullable=False))
+
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -37,20 +44,13 @@ class Place(BaseModel, Base):
     amenity_ids = []
     reviews = relationship(
         "Review", backref="place", cascade="all, delete-orphan")
-    place_amenity = Table(
-            'place_amenity', Base.metadata, Column(
-                'place_id', String(60), ForeignKey('places.id'),
-                primary_key=True, nullable=False),
-            Column(
-                'amenity_id', String(60), ForeignKey('amenities.id'),
-                primary_key=True, nullable=False))
+
     amenities = relationship(
-                'Amenity', secondary='place_amenity', viewonly=False)
+            'Amenity', secondary='place_amenity', viewonly=False)
 
-
+#    amenity_id_list = []
 
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-
         @property
         def reviews():
             """ getter for reviews that returns list of
@@ -77,5 +77,5 @@ class Place(BaseModel, Base):
         def amenities(self, obj):
             '''setter for amenities
             '''
-            if type(obj).__name__ == Amenity:
-                self.amenity_ids.append(obj.id)
+            if type(obj).__name__ == 'Amenity':
+                self.amenity_ids.append(obj)

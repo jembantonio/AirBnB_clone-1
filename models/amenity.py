@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 """This is the amenity class"""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from models.place import Place
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-class Amenity(BaseModel):
+
+class Amenity(BaseModel, Base):
     """This is the class for Amenity
     Attributes:
         name: input name
@@ -14,4 +16,5 @@ class Amenity(BaseModel):
     name = Column(String(128), nullable=False)
 
     place_amenities = relationship(
-            'Place', backref='Amenity', cascade='all, delete-orphan')
+            'Place', secondary='place_amenity',
+            backref='Amenity', cascade='all')
