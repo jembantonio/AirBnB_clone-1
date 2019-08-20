@@ -10,11 +10,12 @@ def do_deploy(archive_path):
 
     env.hosts = ["35.229.110.107", "35.196.24.51"]
 
-    path = "/data/web_static/releases/{}/".format(name)
+    filename = archive_path.split('/')[-1]
     name = filename.split('.')[0]
-    currentpath = /data/web_static/current
+    path = "/data/web_static/releases/{}/".format(name)
+    currentpath = "/data/web_static/current"
 
-    if not exists(archive_path):
+    if not (archive_path):
         return false
     try:
         put(archive_path, "/tmp/")
@@ -26,9 +27,9 @@ def do_deploy(archive_path):
         run("rm /tmp/{}".format(archive_path.split('/')[-1]))
         run("mv {}web_static/* {}".format(path, path))
         run("rm -rf {}web_static".format(path))
-        run("rm -rf {}".format(currentpath)
+        run("rm -rf {}".format(currentpath))
         run("ln -s /data/web_static/releases/{}/ {}".format(
-            ((archive_path.split('/')[-1]).split(".")[0]), currentpath)
+            ((archive_path.split('/')[-1]).split(".")[0]), currentpath))
         return True
 
     except:
