@@ -32,5 +32,4 @@ class State(BaseModel, Base):
             for city_search in models.storage.all(City).values():
                 if city_search.state_id == self.id:
                     city_list.append(city_search)
-            print(city_list)
             return(city_list)
