@@ -35,5 +35,11 @@ def display_html_if(n):
     return render_template('5-number.html', n=n)
 
 
+@app.route('/number_odd_or_even/<int:n>')
+def display_html_int(n):
+    number = "is even" if (n % 2 == 0) else "is odd"
+    return render_template('6-number_odd_or_even.html', n=n, parity=parity)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5000')
