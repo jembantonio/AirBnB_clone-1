@@ -5,6 +5,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
 import os
 import models
+from models.city import City
 
 
 class State(BaseModel, Base):
@@ -20,7 +21,6 @@ class State(BaseModel, Base):
                           cascade='all, delete-orphan', backref='State')
 
     if os.getenv('HBNB_TYPE_STORAGE') != 'db':
-        name = ""
         @property
         def cities(self):
             """ getter for cities that returns list of
