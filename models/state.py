@@ -21,7 +21,7 @@ class State(BaseModel, Base):
 
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         @property
-        def cities():
+        def cities(self):
             """ getter for cities that returns list of
                 city instances with state_id equal to current State.id
             """
