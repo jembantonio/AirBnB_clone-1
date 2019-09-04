@@ -41,7 +41,7 @@ class DBStorage:
         cls_dict = {}
         class_list = [State, City, User, Place, Review, Amenity]
 
-        if cls is not None:
+        if cls is None:
             for c_object in self.__session.query(eval(cls)).all():
                 key = "{}.{}".format(type(c_object).__name__, c_object.id)
                 cls_dict[key] = c_object
