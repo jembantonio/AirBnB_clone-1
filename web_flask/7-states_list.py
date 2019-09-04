@@ -6,6 +6,7 @@ from flask import render_template
 from models import storage
 app = Flask(__name__)
 
+
 @app.route('/states_list', strict_slashes=False)
 def display_states():
     return render_template(
